@@ -91,7 +91,7 @@ class GPSModel(torch.nn.Module):
                 layer_norm=cfg.gt.layer_norm,
                 batch_norm=cfg.gt.batch_norm,
                 bigbird_cfg=cfg.gt.bigbird,
-                graphiT_share=cfg.dataset.edge_encoder_shared
+                csa_share=cfg.dataset.edge_encoder_shared
             ))
         self.layers = torch.nn.Sequential(*layers)
 
