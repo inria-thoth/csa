@@ -8,7 +8,6 @@ from torch_geometric.graphgym.register import register_network
 from torch_geometric.utils import to_dense_batch
 
 from graphgps.layer.gps_layer import GPSLayer
-from graphgps.utils import CudaTimer
 
 
 class FeatureEncoder(torch.nn.Module):
@@ -101,7 +100,5 @@ class GPSModel(torch.nn.Module):
 
     def forward(self, batch):
         for module in self.children():
-            # with CudaTimer(type(module).__name__) as _:
             batch = module(batch)
-        # import pdb; pdb.set_trace()
         return batch

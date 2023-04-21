@@ -9,24 +9,7 @@ This repository was initially forked off the [GraphGPS](https://github.com/rampa
 
 ### Python environment setup with Conda
 
-```bash
-conda create -n csa python=3.9
-conda activate csa
-
-conda install pytorch=1.10 torchvision torchaudio -c pytorch -c nvidia
-conda install pyg=2.0.4 -c pyg -c conda-forge
-
-# RDKit is required for OGB-LSC PCQM4Mv2 and datasets derived from it.  
-conda install openbabel fsspec rdkit -c conda-forge
-
-pip install torchmetrics
-pip install performer-pytorch
-pip install ogb
-pip install tensorboardX
-pip install wandb
-
-conda clean --all
-```
+Launch `bash -i install.sh` to build conda environment, followed by `conda activate csa` to run the code on GPUs.
 
 
 ### Running CSA
@@ -78,5 +61,13 @@ python -m unittest -v unittests.test_eigvecs
 
 If you find this work useful, please cite our paper:
 ```
-citation
+@article{menegaux2023CSA,
+  title={{Self-Attention in Colors: Another Take on Encoding Graph Structure in Transformers}}, 
+  author={Romain Menegaux and Emmanuel Jehanno and Margot Selosse and Julien Mairal},
+  archivePrefix = {arXiv},
+  arxivId = {*to_fill*},
+  journal={arXiv preprint arXiv:*to_fill*},
+  eprint = {*to_fill*},
+  year={2023}
+}
 ```
