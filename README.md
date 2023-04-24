@@ -1,7 +1,7 @@
 # CSA: Self-Attention in Colors
 
 Official implementation of the graph transformer presented in:
-[![arXiv](https://img.shields.io/badge/arXiv-2205.12454-b31b1b.svg)](TODO)
+[![arXiv](https://img.shields.io/badge/arXiv-2304.10933-b31b1b.svg)](https://arxiv.org/abs/2304.10933)
 
 This repository was initially forked off the [GraphGPS](https://github.com/rampasek/GraphGPS) repository
 
@@ -62,12 +62,11 @@ python -m unittest -v unittests.test_eigvecs
 If you find this work useful, please cite our paper:
 ```
 @article{menegaux2023CSA,
-  title={{Self-Attention in Colors: Another Take on Encoding Graph Structure in Transformers}}, 
+  title={Self-Attention in Colors: Another Take on Encoding Graph Structure in Transformers}, 
   author={Romain Menegaux and Emmanuel Jehanno and Margot Selosse and Julien Mairal},
+  year={2023},
+  eprint = {2304.10933},
   archivePrefix = {arXiv},
-  arxivId = {*to_fill*},
-  journal={arXiv preprint arXiv:*to_fill*},
-  eprint = {*to_fill*},
-  year={2023}
+  primaryClass={cs.LG},
 }
 ```
