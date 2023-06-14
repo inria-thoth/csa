@@ -185,8 +185,16 @@ class SPDEdgeEncoder(torch.nn.Module):
         return batch
 
 
+# FIXME: Adding a `self` argument here to avoid error in Concat2EdgeEncoder
 @register_edge_encoder('RWSEEdge')
-class RWSEEdgeEncoder(torch.nn.Module):
+def RWSEEdgeEncoder(self, emb_dim, dense=False):
+    if cfg.posenc_RWSE.cluster == True:
+        return RWSEClusterEdgeEncoder(emb_dim, dense=dense)
+    else:
+        return RWSELinearEdgeEncoder(emb_dim, dense=dense)
+
+
+class RWSELinearEdgeEncoder(torch.nn.Module):
     def __init__(self, emb_dim, dense=False):
         super().__init__()
 
@@ -208,7 +216,41 @@ class RWSEEdgeEncoder(torch.nn.Module):
         else:
             batched_edge_features = batch.edge_RWSE
         del batch.edge_RWSE # This is the largest tensor in the batch, deleting it to save space?
-        batched_edge_features = self.encoder(batched_edge_features)
+        # For the sparse edge_attr we keep the original edges and do not add new ones
+        batch_idx, row, col = get_dense_indices_from_sparse(batch.edge_index, batch.batch)
+        batch.edge_attr = batched_edge_features[batch_idx, row, col]
+        if self.add_dense_edge_features:
+            # Maybe directly concatenate this instead, as for NodePE?
+            batch.edge_dense = batched_edge_features
+
+        return batch
+
+
+class RWSEClusterEdgeEncoder(torch.nn.Module):
+    def __init__(self, emb_dim, dense=False):
+        super().__init__()
+
+        self.reshape = (cfg.posenc_RWSE.precompute == True)
+        self.add_dense_edge_features = dense
+
+        self.encoder = torch.nn.Embedding(num_embeddings=cfg.posenc_RWSE.n_centroids + 1,
+                                          embedding_dim=emb_dim,
+                                          padding_idx=0)
+        # torch.nn.init.xavier_uniform_(self.encoder.weight.data)
+
+    def forward(self, batch):
+        '''
+        Ideally this step should be done in the data loading, but the torch geometric DataLoader
+        forces us to flatten the dense edge feature matrices
+        '''
+        # First reshape the edge features into (n_batch, max_nodes, max_nodes, edge_dim)
+        if self.reshape:
+            # Add 1 to the cluster number so that 0 is only for padding
+            batched_edge_features = reshape_flattened_adj(batch.edge_RWSE + 1, batch.batch)
+        else:
+            batched_edge_features = batch.edge_RWSE
+        del batch.edge_RWSE # This is the largest tensor in the batch, deleting it to save space?
+        batched_edge_features = self.encoder(batched_edge_features.squeeze(-1))
         # For the sparse edge_attr we keep the original edges and do not add new ones
         batch_idx, row, col = get_dense_indices_from_sparse(batch.edge_index, batch.batch)
         batch.edge_attr = batched_edge_features[batch_idx, row, col]

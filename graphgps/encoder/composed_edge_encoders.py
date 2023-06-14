@@ -59,6 +59,7 @@ def concat_edge_encoders(encoder_classes, pe_enc_names):
 
             pe_dim = dim_emb if self.enc_type_cls is None else (dim_emb // 2)
             if self.enc_pe_cls is not None:
+                import pdb; pdb.set_trace()
                 self.encoder2 = self.enc_pe_cls(pe_dim, dense=self.add_dense_edge_features)
 
             if self.share_edge_features:

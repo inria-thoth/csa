@@ -206,6 +206,18 @@ def load_dataset_master(format, name, dataset_dir):
                   + f'{elapsed:.2f}'[-3:]
         logging.info(f"Done! Took {timestr}")
 
+    if 'RWSE' in pe_enabled_list and cfg.posenc_RWSE.cluster == True:
+        start = time.perf_counter()
+        logging.info(f"Clustering Positional Encoding statistics: "
+                     f"{pe_enabled_list} for all graphs...")
+        from graphgps.transform.clustering import run_kmeans
+        cluster_assignment, _ = run_kmeans(dataset.data.edge_RWSE, cfg.posenc_RWSE.n_centroids)
+        dataset.data.edge_RWSE = cluster_assignment.unsqueeze(-1)
+        elapsed = time.perf_counter() - start
+        timestr = time.strftime('%H:%M:%S', time.gmtime(elapsed)) \
+                  + f'{elapsed:.2f}'[-3:]
+        logging.info(f"Done! Took {timestr}")
+
     # Add shortest path length information
     if not hasattr(cfg.dataset, 'spd'):
         cfg.dataset.spd = False

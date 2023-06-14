@@ -94,3 +94,9 @@ def set_cfg_posenc(cfg):
     # Possible feature to add: separate number of steps (or kernel.times) for edges
     # Not implemented yet
     # cfg.posenc_RWSE.edge_psteps = 16
+
+    # Whether to assign codes to edge_RWSE embeddings 
+    cfg.posenc_RWSE.cluster = True
+    # if cfg.posenc_RWSE.cluster == True, then set the number of centroids
+    # for K-Means clustering
+    cfg.posenc_RWSE.n_centroids = 50
